@@ -1,0 +1,55 @@
+#include "ArchivoManager.h"
+#include <fstream>
+#include <iostream>
+using namespace std;
+
+ArchivoManager::ArchivoManager(const string& archivo) : archivoUsuarios(archivo) {}
+
+vector<Usuario> ArchivoManager::leerUsuarios() const {
+    vector<Usuario> usuarios;
+    ifstream file(archivoUsuarios);
+    
+    if (file.is_open()) {
+        string linea;
+        while (getline(file, linea)) {
+            if (!linea.empty()) {
+                usuarios.push_back(Usuario::fromString(linea));
+            }
+        }
+        file.close();
+    }
+    return usuarios;
+}
+
+void ArchivoManager::guardarUsuario(const Usuario& usuario) const {
+    ofstream file(archivoUsuarios, ios::app);
+    if (file.is_open()) {
+        file << usuario.toString() << endl;
+        file.close();
+    }
+}
+
+void ArchivoManager::eliminarUsuario(int id) const {
+    vector<Usuario> usuarios = leerUsuarios();
+    ofstream file(archivoUsuarios);
+    
+    if (file.is_open()) {
+        for (const auto& usuario : usuarios) {
+            if (usuario.id != id) {
+                file << usuario.toString() << endl;
+            }
+        }
+        file.close();
+    }
+}
+
+int ArchivoManager::obtenerProximoId() const {
+    vector<Usuario> usuarios = leerUsuarios();
+    int maxId = 0;
+    for (const auto& usuario : usuarios) {
+        if (usuario.id > maxId) {
+            maxId = usuario.id;
+        }
+    }
+    return maxId + 1;
+}
