@@ -7,7 +7,7 @@ Sistema de administración de usuarios que permite crear, eliminar y listar usua
 1) Extraer el archivo comprimido en una carpeta
 2) Abrir una terminal en esa carpeta
 3) Ejecutar el Makefile a través de la consola, con el comando **make**
-4) Ejecutar el programa con el comando **make run**
+4) Ejecutar el programa con el comando **./administrador_usuarios**
 
 ## Descripcion variables de entorno
 **USER_FILE**: Especifica la ruta del archivo donde se almacenan los usuarios
