@@ -11,4 +11,5 @@ Sistema de administración de usuarios que permite crear, eliminar y listar usua
 
 ## Descripcion variables de entorno
 **USER_FILE**: Especifica la ruta del archivo donde se almacenan los usuarios
+
 **PROFILE_FILE**: Especifica la ruta del archivo donde se almacenan los perfiles y permisos
