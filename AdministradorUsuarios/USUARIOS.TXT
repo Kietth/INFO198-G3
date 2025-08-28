@@ -1,4 +1,0 @@
-3;seba cuevas;volcanicwolf;123;general
-4;jaime alarcon;jaimelitoxx;1234;admin
-7;jorge cheuqueman;corsac;ajua;admin
-6;juanito perez;donjuanzote;queti;general
