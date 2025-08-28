@@ -122,15 +122,16 @@ void Sistema::eliminarUsuario() {
         
         if (perfilUpper == "ADMIN") {
             cout << "ALERTA: Esta intentando eliminar un usuario con perfil ADMIN." << endl;
-            cout << "Esta seguro que desea continuar? (s/n): ";
+        }
+        cout << "SE ELIMINARA EL USUARIO: " << it->nombre << endl;
+        cout << "Esta seguro que desea continuar? (s/n): ";
             
-            char confirmar;
-            cin >> confirmar;
+        char confirmar;
+        cin >> confirmar;
             
-            if (confirmar != 's' && confirmar != 'S') {
-                cout << "Operacion cancelada." << endl;
-                return;
-            }
+        if (confirmar != 's' && confirmar != 'S') {
+            cout << "Operacion cancelada." << endl;
+            return;
         }
         
         archivoManager.eliminarUsuario(id);
@@ -220,4 +221,5 @@ void Sistema::ejecutar() {
         }
         
     } while (opcion != 0);
+
 }
