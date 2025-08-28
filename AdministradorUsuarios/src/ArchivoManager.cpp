@@ -45,11 +45,28 @@ void ArchivoManager::eliminarUsuario(int id) const {
 
 int ArchivoManager::obtenerProximoId() const {
     vector<Usuario> usuarios = leerUsuarios();
+
+    if (usuarios.empty()) return 1;
+
     int maxId = 0;
     for (const auto& usuario : usuarios) {
         if (usuario.id > maxId) {
             maxId = usuario.id;
         }
     }
+
+    for (int i = 1; i <= maxId; i++) {
+            bool dispId = 0;
+
+            for (const auto& usuario : usuarios) {
+                if (usuario.id == i) {
+                    dispId = 1;
+                    break;
+                }
+            }
+
+            if (!dispId) return i;
+        }
+
     return maxId + 1;
 }
