@@ -38,7 +38,7 @@ void Sistema::ingresarUsuario() {
     cout << "\n--- Ingresar Nuevo Usuario ---" << endl;
     
     cin.ignore();
-    cout << "Nombre: ";
+    cout << "Nombre completo: ";
     getline(cin, nombre);
     
     cout << "Username (nickname): ";
@@ -58,7 +58,7 @@ void Sistema::ingresarUsuario() {
     cout << "Perfil: ";
     getline(cin, perfil);
     
-    // Convertir a mayúsculas para validación case-insensitive
+    // Convertir a mayúsculas para validación
     string perfilUpper = perfil;
     transform(perfilUpper.begin(), perfilUpper.end(), perfilUpper.begin(), ::toupper);
     
@@ -67,6 +67,7 @@ void Sistema::ingresarUsuario() {
         perfil = "GENERAL";
     }
     
+    // El constructor de Usuario convertirá automáticamente a mayúsculas
     Usuario nuevoUsuario(id, nombre, username, password, perfil);
     
     char confirmar;
@@ -116,22 +117,18 @@ void Sistema::eliminarUsuario() {
         [id](const Usuario& u) { return u.id == id; });
     
     if (it != usuarios.end()) {
-        // Convertir a mayúsculas para comparación case-insensitive
-        string perfilUpper = it->perfil;
-        transform(perfilUpper.begin(), perfilUpper.end(), perfilUpper.begin(), ::toupper);
-        
-        if (perfilUpper == "ADMIN") {
+        // El perfil ya está en mayúsculas, no necesita conversión
+        if (it->perfil == "ADMIN") {
             cout << "ALERTA: Esta intentando eliminar un usuario con perfil ADMIN." << endl;
-        }
-        cout << "SE ELIMINARA EL USUARIO: " << it->nombre << endl;
-        cout << "Esta seguro que desea continuar? (s/n): ";
+            cout << "Esta seguro que desea continuar? (s/n): ";
             
-        char confirmar;
-        cin >> confirmar;
+            char confirmar;
+            cin >> confirmar;
             
-        if (confirmar != 's' && confirmar != 'S') {
-            cout << "Operacion cancelada." << endl;
-            return;
+            if (confirmar != 's' && confirmar != 'S') {
+                cout << "Operacion cancelada." << endl;
+                return;
+            }
         }
         
         archivoManager.eliminarUsuario(id);
