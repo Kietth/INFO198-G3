@@ -4,11 +4,18 @@
 
 using namespace std;
 
-int main(){
+int main(int argc, char* argv[]){
     cout << "Leyendo archivos... " << endl;
-    
-    vector<vector<int>> matrizA = leeMatriz("data/A.txt");
-    vector<vector<int>> matrizB = leeMatriz("data/B.txt");
+    if (argc != 3){
+        cerr << "Error, debe ejecutar el programa como ./multmat 'ruta_archivo1' 'ruta_archivo2'" << endl;
+        return 1;
+    }
+
+    string archivoA = argv[1];
+    string archivoB =  argv[2];
+     
+    vector<vector<int>> matrizA = leeMatriz(archivoA);
+    vector<vector<int>> matrizB = leeMatriz(archivoB);
 
     if (matrizA.empty() || matrizB.empty()){
         cerr << "Error: No se pudieron leer las matrices" << endl;

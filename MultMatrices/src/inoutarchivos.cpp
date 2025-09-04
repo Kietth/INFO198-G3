@@ -20,10 +20,18 @@ vector<vector<int>> leeMatriz(const string& nombreArchivo) {
     while (getline(archivo, linea)) {
         vector<int> fila;
         stringstream ss(linea);
-        int valor;
+        string token;
         
-        while (ss >> valor) {
-            fila.push_back(valor);
+        while (ss >> token) {
+            try{
+                int valor = stoll(token);
+                fila.push_back(valor);
+            } catch (const exception& e){
+                cerr << "Error: Valor no valido '" << token << "'" << endl;
+                matriz.clear();
+                archivo.close();
+                return matriz;
+            }
         }
         
         if (!fila.empty()) {
