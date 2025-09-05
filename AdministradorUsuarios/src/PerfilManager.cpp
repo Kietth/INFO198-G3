@@ -11,7 +11,8 @@ PerfilManager::PerfilManager(const string& archivo) : archivoPerfiles(archivo) {
 void PerfilManager::cargarPermisos() {
     ifstream file(archivoPerfiles);
     if (!file.is_open()) {
-        cerr << "Error: No se pudo abrir el archivo de perfiles: " << archivoPerfiles << endl;
+        cerr << "ERROR: No se pudo abrir el archivo de perfiles: " << archivoPerfiles << endl;
+        cerr << "El archivo no existe o no se puede acceder a él." << endl;
         return;
     }
     

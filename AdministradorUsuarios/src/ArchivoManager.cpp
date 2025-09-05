@@ -9,38 +9,47 @@ vector<Usuario> ArchivoManager::leerUsuarios() const {
     vector<Usuario> usuarios;
     ifstream file(archivoUsuarios);
     
-    if (file.is_open()) {
-        string linea;
-        while (getline(file, linea)) {
-            if (!linea.empty()) {
-                usuarios.push_back(Usuario::fromString(linea));
-            }
-        }
-        file.close();
+    if (!file.is_open()) {
+        cerr << "ERROR: No se pudo abrir el archivo de usuarios: " << archivoUsuarios << endl;
+        cerr << "El archivo no existe o no se puede acceder a él." << endl;
+        return usuarios;
     }
+    
+    string linea;
+    while (getline(file, linea)) {
+        if (!linea.empty()) {
+            usuarios.push_back(Usuario::fromString(linea));
+        }
+    }
+    file.close();
     return usuarios;
 }
 
 void ArchivoManager::guardarUsuario(const Usuario& usuario) const {
     ofstream file(archivoUsuarios, ios::app);
-    if (file.is_open()) {
-        file << usuario.toString() << endl;
-        file.close();
+    if (!file.is_open()) {
+        cerr << "ERROR: No se pudo abrir el archivo para escribir: " << archivoUsuarios << endl;
+        return;
     }
+    file << usuario.toString() << endl;
+    file.close();
 }
 
 void ArchivoManager::eliminarUsuario(int id) const {
     vector<Usuario> usuarios = leerUsuarios();
     ofstream file(archivoUsuarios);
     
-    if (file.is_open()) {
-        for (const auto& usuario : usuarios) {
-            if (usuario.id != id) {
-                file << usuario.toString() << endl;
-            }
-        }
-        file.close();
+    if (!file.is_open()) {
+        cerr << "ERROR: No se pudo abrir el archivo para escribir: " << archivoUsuarios << endl;
+        return;
     }
+    
+    for (const auto& usuario : usuarios) {
+        if (usuario.id != id) {
+            file << usuario.toString() << endl;
+        }
+    }
+    file.close();
 }
 
 int ArchivoManager::obtenerProximoId() const {

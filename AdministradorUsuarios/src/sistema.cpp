@@ -48,6 +48,17 @@ void Sistema::ingresarUsuario() {
     getline(cin, password);
     
     vector<string> perfiles = perfilManager.getPerfiles();
+    
+    // Verificar si hay perfiles disponibles
+    if (perfiles.empty()) {
+        cout << "ERROR: No hay perfiles configurados en el sistema." << endl;
+        cout << "Por favor, cree el archivo PERFILES.TXT con los perfiles necesarios." << endl;
+        cout << "\nPresione Enter para volver...";
+        cin.ignore();
+        cin.get();
+        return;
+    }
+    
     cout << "Perfiles disponibles: ";
     for (size_t i = 0; i < perfiles.size(); ++i) {
         cout << perfiles[i];
@@ -144,7 +155,11 @@ void Sistema::listarPerfiles() const {
     auto perfiles = perfilManager.getPerfiles();
     
     if (perfiles.empty()) {
-        cout << "No hay perfiles definidos." << endl;
+        cout << "ERROR: No hay perfiles configurados en el sistema." << endl;
+        cout << "Verifique que el archivo PERFILES.TXT exista y tenga el formato correcto." << endl;
+        cout << "\n1) Para volver: ";
+        int opcion;
+        cin >> opcion;
         return;
     }
     
