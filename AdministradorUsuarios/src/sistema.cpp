@@ -2,7 +2,7 @@
 #include <iostream>
 #include <algorithm>
 #include <limits>
-#include <cstring> // Para strcmp
+#include <cstring> 
 using namespace std;
 
 Sistema::Sistema(const string& archivoUsuarios, const string& archivoPerfiles)
@@ -79,7 +79,7 @@ void Sistema::ingresarUsuario() {
         perfil = "GENERAL";
     }
     
-    // El constructor de Usuario convertirá automáticamente a mayúsculas
+    
     Usuario nuevoUsuario(id, nombre.c_str(), username.c_str(), password.c_str(), perfil.c_str());
     
     char confirmar;
