@@ -1,7 +1,7 @@
 #include "PerfilManager.h"
 #include <fstream>
-#include <sstream>
 #include <iostream>
+#include <sstream>
 using namespace std;
 
 PerfilManager::PerfilManager(const string& archivo) : archivoPerfiles(archivo) {

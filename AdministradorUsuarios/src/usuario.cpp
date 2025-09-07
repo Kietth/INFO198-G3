@@ -1,39 +1,40 @@
 #include "Usuario.h"
-#include <sstream>
-#include <vector>
 #include <algorithm>
 #include <cctype>
+#include <cstring>
 using namespace std;
 
-Usuario::Usuario() : id(0) {}
-
-Usuario::Usuario(int id, const string& nombre, const string& username, 
-                 const string& password, const string& perfil)
-    : id(id), nombre(nombre), username(username), password(password) {
-    // Convertir perfil a mayúsculas al construirlo
-    this->perfil = perfil;
-    transform(this->perfil.begin(), this->perfil.end(), this->perfil.begin(), ::toupper);
+Usuario::Usuario() : id(0) {
+    strcpy(nombre, "");
+    strcpy(username, "");
+    strcpy(password, "");
+    strcpy(perfil, "");
 }
 
-string Usuario::toString() const {
-    stringstream ss;
-    ss << id << ";" << nombre << ";" << username << ";" << password << ";" << perfil;
-    return ss.str();
+Usuario::Usuario(int id, const char* nombre, const char* username,
+                 const char* password, const char* perfil) : id(id) {
+    strncpy(this->nombre, nombre, sizeof(this->nombre) - 1);
+    this->nombre[sizeof(this->nombre) - 1] = '\0';
+    
+    strncpy(this->username, username, sizeof(this->username) - 1);
+    this->username[sizeof(this->username) - 1] = '\0';
+    
+    strncpy(this->password, password, sizeof(this->password) - 1);
+    this->password[sizeof(this->password) - 1] = '\0';
+    
+    strncpy(this->perfil, perfil, sizeof(this->perfil) - 1);
+    this->perfil[sizeof(this->perfil) - 1] = '\0';
+    
+    toUpperPerfil();
 }
 
-Usuario Usuario::fromString(const string& linea) {
-    vector<string> partes;
-    stringstream ss(linea);
-    string item;
-    
-    while (getline(ss, item, ';')) {
-        partes.push_back(item);
+void Usuario::toUpperPerfil() {
+    for (int i = 0; perfil[i] != '\0'; i++) {
+        perfil[i] = toupper(perfil[i]);
     }
-    
-    if (partes.size() == 5) {
-        int id = stoi(partes[0]);
-        // El perfil se convertirá a mayúsculas en el constructor
-        return Usuario(id, partes[1], partes[2], partes[3], partes[4]);
-    }
-    return Usuario();
+}
+
+bool Usuario::isEmpty() const {
+    return id == 0 && nombre[0] == '\0' && username[0] == '\0' && 
+           password[0] == '\0' && perfil[0] == '\0';
 }

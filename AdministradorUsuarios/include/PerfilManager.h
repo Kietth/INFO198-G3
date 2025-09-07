@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include "Perfil.h"
 using namespace std;
 
 class PerfilManager {

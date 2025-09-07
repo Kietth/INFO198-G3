@@ -2,6 +2,7 @@
 #include <iostream>
 #include <algorithm>
 #include <limits>
+#include <cstring> // Para strcmp
 using namespace std;
 
 Sistema::Sistema(const string& archivoUsuarios, const string& archivoPerfiles)
@@ -79,7 +80,7 @@ void Sistema::ingresarUsuario() {
     }
     
     // El constructor de Usuario convertirá automáticamente a mayúsculas
-    Usuario nuevoUsuario(id, nombre, username, password, perfil);
+    Usuario nuevoUsuario(id, nombre.c_str(), username.c_str(), password.c_str(), perfil.c_str());
     
     char confirmar;
     cout << "\nDesea guardar este usuario? (s/n): ";
@@ -128,8 +129,8 @@ void Sistema::eliminarUsuario() {
         [id](const Usuario& u) { return u.id == id; });
     
     if (it != usuarios.end()) {
-        // El perfil ya está en mayúsculas, no necesita conversión
-        if (it->perfil == "ADMIN") {
+        // Usar strcmp para comparar arrays de char
+        if (strcmp(it->perfil, "ADMIN") == 0) {
             cout << "ALERTA: Esta intentando eliminar un usuario con perfil ADMIN." << endl;
             cout << "Esta seguro que desea continuar? (s/n): ";
             
@@ -233,5 +234,4 @@ void Sistema::ejecutar() {
         }
         
     } while (opcion != 0);
-
 }

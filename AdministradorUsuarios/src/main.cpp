@@ -5,6 +5,8 @@
 using namespace std;
 
 int main() {
+     //para verificar
+    cout << "Tamaño del struct Usuario: " << sizeof(Usuario) << " bytes" << endl;
     // Cargar variables de entorno desde archivo .env
     const char* userFile = getenv("USER_FILE");
     const char* profileFile = getenv("PROFILE_FILE");
@@ -34,6 +36,7 @@ int main() {
     } else {
         perfilesFile.close();
     }
+
     
     cout << endl;
     

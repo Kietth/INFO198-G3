@@ -1,22 +1,21 @@
 #ifndef USUARIO_H
 #define USUARIO_H
 
-#include <string>
-using namespace std;
+#include <cstring>
 
 struct Usuario {
     int id;
-    string nombre;
-    string username;
-    string password;
-    string perfil;
+    char nombre[100];
+    char username[50];
+    char password[50];
+    char perfil[20];
     
     Usuario();
-    Usuario(int id, const string& nombre, const string& username, 
-            const string& password, const string& perfil);
+    Usuario(int id, const char* nombre, const char* username, 
+            const char* password, const char* perfil);
     
-    string toString() const;
-    static Usuario fromString(const string& linea);
+    void toUpperPerfil();
+    bool isEmpty() const;
 };
 
 #endif
