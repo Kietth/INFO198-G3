@@ -30,5 +30,5 @@ Este comando iniciará el menú principal desde donde podrás acceder a las dist
 
 **Variables de Entorno:**
 
-USER_FILE: Especifica la ruta del archivo donde se almacenan los usuarios.
+USER_FILE: Especifica la ruta del archivo donde se almacenan los usuarios. <br/>
 PROFILE_FILE: Especifica la ruta del archivo donde se almacenan los perfiles y permisos.
