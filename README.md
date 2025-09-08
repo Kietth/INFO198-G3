@@ -1,10 +1,10 @@
 # INFO198-G3 SISTEMA
 
-Propósito de la aplicación:
+**Propósito de la aplicación:**
 
 Este es un sistema que reune múltiples utilidades en un único punto de acceso. 
 
-Ejecución del Programa:
+**Ejecución del Programa:**
 
 Para iniciar el sistema, sigue estos pasos:
 Descomprimir el archivo: Extrae el contenido del archivo comprimido en una carpeta de tu preferencia.
@@ -15,7 +15,7 @@ Bash
 
 Este comando iniciará el menú principal desde donde podrás acceder a las distintas aplicaciones.
 
-Módulos y Funcionalidades:
+**Módulos y Funcionalidades:**
 
 ADMINISTRADOR_DE_USUARIOS: Permite crear, eliminar y listar usuarios con diferentes perfiles y permisos.
 MULTIPLICADOR_DE_MATRICES_NXN: Una herramienta para realizar la multiplicación de matrices de NXN.
@@ -24,7 +24,7 @@ ES_PALINDROMO?: Una utilidad para verificar si una cadena de texto es un palínd
 CALCULAR_UNA_FUNCION: Un módulo para la evaluación de una funcion matematica predefinida.
 CONTEO_DE_PALABRAS: Una herramienta que cuenta la frecuencia de las palabras en una cadena de texto.
 
-Variables de Entorno
+**Variables de Entorno:**
 
 USER_FILE: Especifica la ruta del archivo donde se almacenan los usuarios.
 PROFILE_FILE: Especifica la ruta del archivo donde se almacenan los perfiles y permisos.
