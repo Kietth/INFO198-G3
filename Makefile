@@ -7,8 +7,9 @@ MATRICES_BIN = MultMatrices/multmat
 PALINDROMO_BIN = Palindromo/palindromo
 FUNCION_BIN = ResolverFuncion/resolver_funcion
 MENU_BIN = menu_principal
+CONTEO_BIN = ContarPalabras/conteo_texto
 
-all: admin matrices palindromo funcion menu
+all: admin matrices palindromo funcion menu conteo
 
 # --- Administrador de usuarios ---
 admin:
@@ -34,6 +35,13 @@ funcion:
 	-IResolverFuncion/include \
 	-o $(FUNCION_BIN) $(CXXFLAGS)
 
+# --- Conteo de texto ---
+conteo:
+	$(CXX) ContarPalabras/src/*.cpp  \
+	-IContarPalabras/include \
+	-o $(CONTEO_BIN) $(CXXFLAGS)
+
+
 # --- Menú principal ---
 menu:
 	$(CXX) MenuPrincipal/src/*.cpp \
@@ -45,7 +53,6 @@ menu:
 	-o $(MENU_BIN) $(CXXFLAGS)
 
 
-
 # --- Limpiar ---
 clean:
-	rm -f $(ADMIN_BIN) $(MATRICES_BIN) $(PALINDROMO_BIN) $(FUNCION_BIN) $(MENU_BIN)
+	rm -f $(ADMIN_BIN) $(MATRICES_BIN) $(PALINDROMO_BIN) $(FUNCION_BIN) $(MENU_BIN) $(CONTEO_BIN)

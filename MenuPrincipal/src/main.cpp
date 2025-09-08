@@ -71,7 +71,7 @@ void Menu::mostrar(const string& user, const string& pass) {
                 esperar();
                 break;
             case 6:
-                cout << "Conteo sobre texto (en construcción)\n";
+                system("./ContarPalabras/conteo_texto");
                 esperar();
                 break;
             default:

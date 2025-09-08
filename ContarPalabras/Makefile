@@ -1,28 +1,11 @@
-CXX := g++
-CXXFLAGS := -std=c++17 -O2 -Wall -Wextra -Iinclude
+CXX = g++
+CXXFLAGS = -Wall -Iinclude
 
-#.exe
-BIN := conteo_texto.exe
-SRC := $(wildcard src/*.cpp)
-OBJ := $(patsubst src/%.cpp,build/%.o,$(SRC))
+all: conteo_texto
 
-.PHONY: all clean
+# Compila main.cpp y conteo.cpp en un ejecutable llamado conteo_texto
+conteo_texto: src/main.cpp src/conteo.cpp
+	$(CXX) $(CXXFLAGS) -o conteo_texto src/main.cpp src/conteo.cpp
 
-all: $(BIN)
-
-# Compilar cada .cpp a build/*.o
-build/%.o: src/%.cpp | build
-	$(CXX) $(CXXFLAGS) -c "$<" -o "$@"
-
-# Linkear objetos al binario
-$(BIN): $(OBJ)
-	$(CXX) $(CXXFLAGS) $(OBJ) -o "$@"
-
-# Crear carpeta build si no existe (sintaxis de cmd/PowerShell)
-build:
-	if not exist build mkdir build
-
-# Limpiar
 clean:
-	-if exist build rmdir /S /Q build
-	-if exist $(BIN) del /Q $(BIN)
+	rm -f conteo_texto

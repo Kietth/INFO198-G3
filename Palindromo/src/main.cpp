@@ -28,19 +28,14 @@ bool es_palindromo(const string& palabra) {
 int main() {
     string entrada;
 
-    cout << "Ingresa una palabra para verificar si es un palindromo: ";
+    cout << "Ingresa un texto para verificar si es un palindromo: ";
     getline(cin, entrada);
 
-    // Verificamos si la cadena contiene un espacio
-    if (entrada.find(' ') != string::npos) {
-        cout << "Error: Por favor, ingresa una sola palabra" << endl;
-    } else {
-        if (es_palindromo(entrada)) {
-            cout << "La palabra \"" << entrada << "\" es palindromo" << endl;
+    if (es_palindromo(entrada)) {
+            cout << "El texto \"" << entrada << "\" es palindromo" << endl;
         } else {
-            cout << "La palabra \"" << entrada << "\" NO es palindromo" << endl;
+            cout << "El texto \"" << entrada << "\" NO es palindromo" << endl;
         }
-    }
 
     return 0;
 }
