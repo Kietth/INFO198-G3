@@ -24,7 +24,7 @@ vector<vector<int>> leeMatriz(const string& nombreArchivo) {
         
         while (ss >> token) {
             try{
-                int valor = stoll(token);
+                int valor = stoi(token);
                 fila.push_back(valor);
             } catch (const exception& e){
                 cerr << "Error: Valor no valido '" << token << "'" << endl;
