@@ -3,6 +3,13 @@
 #include <algorithm>
 #include <limits>
 #include <cstring> 
+#ifdef _WIN32
+#include <windows.h>
+inline int obtenerPID() {return GetCurrentProcessId();}
+#else
+#include <unistd.h>
+inline int obtenerPID() {return getpid();}
+#endif
 using namespace std;
 
 Sistema::Sistema(const string& archivoUsuarios, const string& archivoPerfiles)
@@ -16,7 +23,7 @@ void Sistema::cargarUsuarios() {
 }
 
 void Sistema::mostrarMenu() const {
-    cout << "\n=== ADMINISTRADOR DE USUARIOS ===" << endl;
+    cout << "\n=== ADMINISTRADOR DE USUARIOS === PID: "<< obtenerPID() << endl;
     cout << "1. Ingresar usuario" << endl;
     cout << "2. Listar usuarios" << endl;
     cout << "3. Eliminar usuario" << endl;

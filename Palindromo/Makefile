@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -Wall -Iinclude
+CXXFLAGS = -std=c++11 -Wall -Iinclude
 
 all: palindromo
 

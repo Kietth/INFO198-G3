@@ -1,14 +1,20 @@
 #include <iostream>
 #include "funcion.h"
-
+#ifdef _WIN32
+#include <windows.h>
+inline int obtenerPID() {return GetCurrentProcessId();}
+#else
+#include <unistd.h>
+inline int obtenerPID() {return getpid();}
+#endif
 using namespace std;
 
 int main() {
     int opcion;
     do {
-        cout << "===== Sistema de Funciones =====\n";
+        cout << "===== Sistema de Funciones ===== PID: "<< obtenerPID() << endl;
         cout << "1. Evaluar f(x) = x^2 + 2x + 8\n";
-        cout << "2. Salir\n";
+        cout << "0. Salir\n";
         cout << "Selecciona una opcion: ";
         cin >> opcion;
 
@@ -21,14 +27,15 @@ int main() {
                 cout << "f(" << x << ") = " << resultado << endl << endl;
                 break;
             }
-            case 2:
+            case 0: {
                 cout << "Saliendo...\n";
                 break;
+            }
             default:
                 cout << "Opcion invalida, intenta de nuevo.\n\n";
         }
 
-    } while(opcion != 2);
+    } while(opcion != 0);
 
     return 0;
 }

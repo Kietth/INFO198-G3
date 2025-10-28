@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <fstream>
 #include "Sistema.h"
+
 using namespace std;
 
 int main() {
@@ -14,7 +15,7 @@ int main() {
     string archivoUsuarios = userFile ? userFile : "USUARIOS.TXT";
     string archivoPerfiles = profileFile ? profileFile : "PERFILES.TXT";
     
-    cout << "=== SISTEMA ADMINISTRADOR DE USUARIOS ===" << endl;
+    cout << "=== SISTEMA ADMINISTRADOR DE USUARIOS ==="<< endl;
     cout << "Archivo de usuarios: " << archivoUsuarios << endl;
     cout << "Archivo de perfiles: " << archivoPerfiles << endl;
     cout << "=========================================" << endl;

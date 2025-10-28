@@ -9,6 +9,7 @@ FUNCION_BIN = ResolverFuncion/resolver_funcion
 MENU_BIN = menu_principal
 CONTEO_BIN = ContarPalabras/conteo_texto
 
+
 all: admin matrices palindromo funcion menu conteo
 
 # --- Administrador de usuarios ---
