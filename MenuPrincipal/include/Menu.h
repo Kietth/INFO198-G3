@@ -5,7 +5,7 @@
 
 class Menu {
 public:
-    void mostrar(const std::string& user, const std::string& pass);
+    void mostrar(const std::string& user, const std::string& pass, const std::string& rutalibro);
 };
 
 #endif

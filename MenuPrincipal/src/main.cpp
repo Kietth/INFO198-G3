@@ -5,16 +5,19 @@
 #include <cstdlib>
 #include <limits>
 #include <fstream>
-#ifdef _WIN32
-#include <windows.h>
-inline int obtenerPID() {return GetCurrentProcessId();}
-#else
-#include <unistd.h>
+#include <unistd.h> // Para getpid()
 inline int obtenerPID() {return getpid();}
-#endif
 
 
 using namespace std;
+
+
+string getRutaEjecutable(string ruta) {
+    if (ruta.rfind("./", 0) != 0 && ruta.rfind("/", 0) != 0) {
+        ruta = "./" + ruta;
+    }
+    return ruta;
+}
 
 void esperar() {
     cout << "\nPresione Enter para continuar...";
@@ -22,7 +25,7 @@ void esperar() {
     cin.get();
 }
 
-void Menu::mostrar(const string& user, const string& pass) {
+void Menu::mostrar(const string& user, const string& pass, const string& filePath) {
     Auth auth("AdministradorUsuarios/USUARIOS.TXT",
               "AdministradorUsuarios/PERFILES.TXT");
 
@@ -62,40 +65,41 @@ void Menu::mostrar(const string& user, const string& pass) {
         }
 
         switch(opcion) {
+            // ----- CASE 1: AdministradorUsuarios -----
             case 1: {
                 auto env = cargarEnv(".env");
-                string adminPath = env["ADMIN_SYS"];
+                string adminPath = env["ADMIN_SYS"]; 
                 
-                // Eliminar "./" del inicio si está presente
-                if (adminPath.find("./") == 0) {
-                    adminPath = adminPath.substr(2);
-                }
+                adminPath = getRutaEjecutable(adminPath); 
+
                 
-                // Separar el directorio y el ejecutable
                 size_t lastSlash = adminPath.find_last_of('/');
-                if (lastSlash == string::npos) {
-                    string comando = "./" + adminPath;
-                    cout << "Ejecutando: " << comando << endl;
-                    int ret = system(comando.c_str());
-                    if (ret != 0) {
-                        cout << "No se pudo ejecutar el administrador de usuarios.\n";
-                    }
-                } else {
-                    string directorio = adminPath.substr(0, lastSlash);
-                    string ejecutable = adminPath.substr(lastSlash + 1);
-                    string comando = "cd " + directorio + " && ./" + ejecutable;
-                    cout << "Ejecutando: " << comando << endl;
-                    int ret = system(comando.c_str());
-                    if (ret != 0) {
-                        cout << "No se pudo ejecutar el administrador de usuarios.\n";
-                    }
+                string directorio = ".";
+                string ejecutable = adminPath;
+
+                if (lastSlash != string::npos) {
+                    directorio = adminPath.substr(0, lastSlash); 
+                    ejecutable = adminPath.substr(lastSlash + 1); 
                 }
+                
+                
+                string comando = "cd " + directorio + " && ./" + ejecutable + " && cd -";
+                
+
+                cout << "Ejecutando: " << comando << endl;
+                int ret = system(comando.c_str());
+                if (ret != 0) {
+                    cout << "❌ No se pudo ejecutar el administrador de usuarios (código: " << ret << ").\n";
+                }
+                
                 esperar();
                 break;
             }
+            // ----- CASE 2: Multiplica matrices -----
             case 2:{
                 auto env = cargarEnv(".env");
-                string multiPath = env["MULTI_M"];
+              
+                string multiPath = getRutaEjecutable(env["MULTI_M"]);
                 
                 int N;
                 string pathA, pathB;
@@ -110,7 +114,7 @@ void Menu::mostrar(const string& user, const string& pass) {
                     break;
                 }
                 
-                cin.ignore();
+                cin.ignore(); 
                 
                 cout << "Ingrese el path del archivo de la primera matriz: ";
                 getline(cin, pathA);
@@ -118,7 +122,6 @@ void Menu::mostrar(const string& user, const string& pass) {
                 cout << "Ingrese el path del archivo de la segunda matriz: ";
                 getline(cin, pathB);
                 
-                // Validar existencia de archivos
                 ifstream fileA(pathA), fileB(pathB);
                 if (!fileA) {
                     cout << "❌ El archivo de la matriz 1 no existe." << endl;
@@ -131,7 +134,6 @@ void Menu::mostrar(const string& user, const string& pass) {
                     break;
                 }
                 
-                // Verificar que los archivos no estén vacíos
                 if (fileA.peek() == ifstream::traits_type::eof()) {
                     cout << "❌ El archivo de la matriz 1 está vacío." << endl;
                     esperar();
@@ -143,12 +145,9 @@ void Menu::mostrar(const string& user, const string& pass) {
                     break;
                 }
                 
-                
-                // Construir el comando
                 string comando = multiPath + " \"" + pathA + "\" \"" + pathB + "\" " + to_string(N);
                 cout << "Ejecutando: " << comando << endl;
                 
-                // Ejecutar el comando
                 int resultado = system(comando.c_str());
                 
                 if (resultado != 0) {
@@ -158,28 +157,67 @@ void Menu::mostrar(const string& user, const string& pass) {
                 esperar();
                 break;
             }
+            // ----- CASE 3: Juego -----
             case 3:
                 cout << "Juego (en construcción)\n";
                 esperar();
                 break;
+            // ----- CASE 4: Palíndromo (Hardcodeado) -----
             case 4:
+                
                 system("./Palindromo/palindromo");
                 esperar();
                 break;
+            // ----- CASE 5: Resolver Función (Hardcodeado) -----
             case 5:
+                
                 system("./ResolverFuncion/resolver_funcion");
                 esperar();
                 break;
-            case 6:
-                cout << "Conteo sobre texto (en construcción)\n";
+            // ----- CASE 6: Conteo sobre texto -----
+            case 6: { 
+                auto env = cargarEnv(".env");
+                
+                string prog = getRutaEjecutable(env["CONTEO_TEXTO"]); 
+
+                if (prog.empty()) {
+                    cout << "❌ La variable de entorno CONTEO_TEXTO no está definida en .env" << endl;
+                    esperar();
+                    break;
+                }
+                
+                ifstream file(filePath); 
+                if (!file) {
+                    cout << "❌ El archivo de libro (" << filePath << ") no existe." << endl;
+                    esperar();
+                    break;
+                }
+                
+                if (file.peek() == ifstream::traits_type::eof()) {
+                    cout << "❌ El archivo de libro (" << filePath << ") está vacío." << endl;
+                    esperar();
+                    break;
+                }
+                file.close();
+
+                string comando = prog + " \"" + filePath + "\"";
+                cout << "Ejecutando: " << comando << endl;
+
+                int resultado = system(comando.c_str());
+                
+                if (resultado != 0) {
+                    cout << "❌ Error al ejecutar el conteo de palabras (código: " << resultado << ")." << endl;
+                }
+                
                 esperar();
                 break;
+            } 
+            // ----- CASE 7: Crear Índice -----
             case 7: {
                 string nombreIdx, carpeta;
                 cout << "Ingrese el nombre del archivo índice (.idx): ";
                 cin >> nombreIdx;
 
-                // Validar extensión
                 if (nombreIdx.size() < 4 || nombreIdx.substr(nombreIdx.size()-4) != ".idx") {
                     cout << "❌ El archivo debe terminar en .idx\n";
                     esperar();
@@ -189,12 +227,11 @@ void Menu::mostrar(const string& user, const string& pass) {
                 cout << "Ingrese el path de la carpeta con los libros: ";
                 cin >> carpeta;
 
-                // Cargar variable de entorno
                 auto env = cargarEnv(".env");
-                string prog = env["CREATE_INDEX"];
+                
+                string prog = getRutaEjecutable(env["CREATE_INDEX"]);
 
-                // Construir comando
-                string comando = string(prog) + " " + nombreIdx + " " + carpeta;
+                string comando = prog + " " + nombreIdx + " " + carpeta;
                 cout << "Ejecutando: " << comando << endl;
 
                 system(comando.c_str());
@@ -211,25 +248,26 @@ void Menu::mostrar(const string& user, const string& pass) {
 
 
 int main(int argc, char* argv[]) {
-    string user, pass;
+    string user, pass, filePath; 
 
-    // Leer parámetros -u y -p
     for (int i = 1; i < argc; i++) {
         string arg = argv[i];
         if (arg == "-u" && i + 1 < argc) {
             user = argv[++i];
         } else if (arg == "-p" && i + 1 < argc) {
             pass = argv[++i];
+        } else if (arg == "-f" && i + 1 < argc) { 
+            filePath = argv[++i];
         }
     }
 
-    if (user.empty() || pass.empty()) {
-        cerr << "Uso: " << argv[0] << " -u <usuario> -p <password>\n";
+    if (user.empty() || pass.empty() || filePath.empty()) {
+        cerr << "Uso: " << argv[0] << " -u <usuario> -p <password> -f <ruta_archivo_libro>\n";
         return 1;
     }
 
     Menu menu;
-    menu.mostrar(user, pass);
+    menu.mostrar(user, pass, filePath);
 
     return 0;
 }

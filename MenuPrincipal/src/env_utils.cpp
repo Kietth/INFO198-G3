@@ -1,24 +1,48 @@
 #include "env_utils.h"
 #include <fstream>
-#include <sstream>
+#include <string>
+#include <algorithm> 
 
 using namespace std;
 
-map<string, string> cargarEnv(const string& filename){
-    map<string, string> env;
-    ifstream file(filename);
+
+string trim(const string& str) {
+    auto first = find_if_not(str.begin(), str.end(), ::isspace);
+    auto last = find_if_not(str.rbegin(), str.rend(), ::isspace).base();
+    return (last <= first ? "" : string(first, last));
+}
+
+
+
+map<string, string> cargarEnv(const string& ruta) {
+    map<string, string> envMap;
+    ifstream file(ruta);
     string line;
-    while(getline(file, line)){
-        istringstream is_line(line);
-        string key;
-        if(getline(is_line, key, '=')){
-            string value;
-            if(getline(is_line, value)){
-                key.erase(key.find_last_not_of(" \n\r\t")+1);
-                value.erase(0, value.find_first_not_of(" \n\r\t"));
-                env[key] = value;
-            }
-        }
+
+    if (!file.is_open()) {
+        return envMap; 
     }
-    return env;
+
+    while (getline(file, line)) {
+        if (line.empty() || line[0] == '#') {
+            continue;
+        }
+
+        size_t pos = line.find('=');
+        if (pos == string::npos) {
+            continue; 
+        }
+
+        string key = trim(line.substr(0, pos));
+        string value = trim(line.substr(pos + 1));
+        
+        if (key.empty() || value.empty()) {
+            continue;
+        }
+
+        envMap[key] = value;
+    }
+
+    file.close();
+    return envMap;
 }

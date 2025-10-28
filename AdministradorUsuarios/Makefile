@@ -1,24 +1,33 @@
 # Makefile sin archivos .o visibles
 CXX = g++
-CXXFLAGS = -std=c++11 -Wall -Wextra -I./include
-TARGET = administrador_usuarios
+CXXFLAGS = -Wall -g -I./include
+LDFLAGS =
+
 SRC_DIR = src
+OBJ_DIR = build
 
-# Lista de archivos fuente
-SOURCES = $(SRC_DIR)/main.cpp $(SRC_DIR)/usuario.cpp $(SRC_DIR)/ArchivoManager.cpp \
-          $(SRC_DIR)/sistema.cpp $(SRC_DIR)/PerfilManager.cpp
+TARGET = administrador_usuarios
 
+SRCS = $(SRC_DIR)/main.cpp $(SRC_DIR)/usuario.cpp $(SRC_DIR)/ArchivoManager.cpp \
+		$(SRC_DIR)/sistema.cpp $(SRC_DIR)/PerfilManager.cpp
 
-# Compilar directamente todos los archivos
-$(TARGET): $(SOURCES)
-	$(CXX) $(CXXFLAGS) -o $@ $(SOURCES)
+OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 
+.PHONY: all
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+	@echo "Enlazando $(TARGET)..."
+	$(CXX) $(LDFLAGS) -o $(TARGET) $(OBJS)
+	@echo "$(TARGET) creado en $(CURDIR)"
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+	@mkdir -p $(OBJ_DIR)
+	@echo "Compilando $< -> $@"
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+.PHONY: clean
 clean:
+	@echo "Limpiando $(TARGET) y $(OBJ_DIR) en $(CURDIR)..."
 	rm -f $(TARGET)
-
-run: $(TARGET)
-	./$(TARGET)
-
-rebuild: clean all
-
-.PHONY: all clean run rebuild
+	rm -f $(OBJ_DIR)/*.o
