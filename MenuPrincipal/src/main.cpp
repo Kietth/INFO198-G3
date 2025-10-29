@@ -48,7 +48,8 @@ void Menu::mostrar(const string& user, const string& pass, const string& filePat
         if (auth.tienePermiso(4)) cout << "4. ¿Es palíndromo?\n";
         if (auth.tienePermiso(5)) cout << "5. Calcular f(x)=x^2+2x+8\n";
         if (auth.tienePermiso(6)) cout << "6. Conteo sobre texto\n";
-        if (auth.tienePermiso(7)) cout << "7. Crea índice invertido\n";   
+        if (auth.tienePermiso(7)) cout << "7. Crea índice invertido\n";
+        if (auth.tienePermiso(8)) cout << "8. Crea índice invertido PARALELO\n";
 
         cout << "Seleccione: ";
         cin >> opcion;
@@ -235,6 +236,65 @@ void Menu::mostrar(const string& user, const string& pass, const string& filePat
                 cout << "Ejecutando: " << comando << endl;
 
                 system(comando.c_str());
+                esperar();
+                break;
+            }
+            // ----- CASE 8: Crear Índice Invertido PARALELO -----
+            case 8: {
+                string nombreIdx, carpeta;
+                int nThreads, nLote;
+                
+                cout << "\n--- Crear Índice Invertido PARALELO ---" << endl;
+                
+                cout << "Ingrese el nombre del archivo índice (.idx): ";
+                cin >> nombreIdx;
+
+                if (nombreIdx.size() < 4 || nombreIdx.substr(nombreIdx.size()-4) != ".idx") {
+                    cout << "❌ El archivo debe terminar en .idx\n";
+                    esperar();
+                    break;
+                }
+
+                cout << "Ingrese el path de la carpeta con los libros: ";
+                cin >> carpeta;
+                
+                cout << "Ingrese el número de threads (N-THREADS): ";
+                cin >> nThreads;
+                
+                if (nThreads <= 0) {
+                    cout << "❌ N-THREADS debe ser mayor que 0" << endl;
+                    esperar();
+                    break;
+                }
+                
+                cout << "Ingrese el tamaño del lote (N-LOTE): ";
+                cin >> nLote;
+                
+                if (nLote <= 0) {
+                    cout << "❌ N-LOTE debe ser mayor que 0" << endl;
+                    esperar();
+                    break;
+                }
+
+                auto env = cargarEnv(".env");
+                string prog = getRutaEjecutable(env["INDICE_INVET_PARALELO"]);
+
+                if (prog.empty()) {
+                    cout << "❌ La variable INDICE_INVET_PARALELO no está definida en .env" << endl;
+                    esperar();
+                    break;
+                }
+
+                string comando = prog + " " + nombreIdx + " " + carpeta + " " 
+                               + to_string(nThreads) + " " + to_string(nLote);
+                cout << "Ejecutando: " << comando << endl;
+
+                int resultado = system(comando.c_str());
+                
+                if (resultado != 0) {
+                    cout << "❌ Error al ejecutar el índice paralelo (código: " << resultado << ")." << endl;
+                }
+                
                 esperar();
                 break;
             }

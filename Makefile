@@ -1,5 +1,6 @@
 CXX = g++
 CXXFLAGS = -std=c++17 -Wall -g
+THREAD_FLAGS = -pthread
 
 # --- Ejecutables ---
 ADMIN_BIN = AdministradorUsuarios/administrador_usuarios
@@ -8,13 +9,14 @@ PALINDROMO_BIN = Palindromo/palindromo
 FUNCION_BIN = ResolverFuncion/resolver_funcion
 CONTEO_BIN = ContarPalabras/conteo_texto
 INDICE_BIN = CrearIndice/crear_indice
+INDICE_PARALELO_BIN = CrearIndiceParalelo/crear_indice_paralelo
 MENU_BIN = menu_principal
 
 # --- Targets que no son archivos ---
 .PHONY: all clean re
 
 # --- Target por defecto ---
-all: $(ADMIN_BIN) $(MATRICES_BIN) $(PALINDROMO_BIN) $(FUNCION_BIN) $(CONTEO_BIN) $(INDICE_BIN) $(MENU_BIN)
+all: $(ADMIN_BIN) $(MATRICES_BIN) $(PALINDROMO_BIN) $(FUNCION_BIN) $(CONTEO_BIN) $(INDICE_BIN) $(INDICE_PARALELO_BIN) $(MENU_BIN)
 	@echo "--- ✅ Compilacion general completada ---"
 
 # --- Administrador de usuarios ---
@@ -59,6 +61,12 @@ $(INDICE_BIN):
 	-ICrearIndice/include \
 	-o $(INDICE_BIN) $(CXXFLAGS) -lstdc++fs
 
+# --- Crear Indice Paralelo ---
+$(INDICE_PARALELO_BIN):
+	@echo "--- Compilando [Crear Indice PARALELO] ---"
+	$(CXX) CrearIndiceParalelo/src/crear_indice_paralelo.cpp \
+	-o $(INDICE_PARALELO_BIN) $(CXXFLAGS) $(THREAD_FLAGS) -lstdc++fs
+
 # --- Menú principal ---
 $(MENU_BIN): $(ADMIN_BIN)
 	@echo "--- Compilando [Menu Principal] ---"
@@ -73,9 +81,9 @@ $(MENU_BIN): $(ADMIN_BIN)
 # --- Limpiar ---
 clean:
 	@echo "--- 🧹 Limpiando todos los ejecutables ---"
-	rm -f $(ADMIN_BIN) $(MATRICES_BIN) $(PALINDROMO_BIN) $(FUNCION_BIN) $(MENU_BIN) $(CONTEO_BIN) $(INDICE_BIN)
+	rm -f $(ADMIN_BIN) $(MATRICES_BIN) $(PALINDROMO_BIN) $(FUNCION_BIN) $(MENU_BIN) $(CONTEO_BIN) $(INDICE_BIN) $(INDICE_PARALELO_BIN)
 	@echo "--- Limpieza completada ---"
 
 # --- Reconstruir (re) ---
 re: clean all
-	@echo "--- ✨ Reconstruccion general completada ---"
+	@echo "--- ✨ Reconstruccion general completada ---"	
