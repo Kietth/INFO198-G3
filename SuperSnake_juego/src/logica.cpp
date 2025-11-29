@@ -1,31 +1,45 @@
 #include "logica.h"
-#include "red_servidor.h" // Necesita serializarEstado para el gameLoop
+#include "red_servidor.h" 
 #include <iostream>
 #include <vector>
 #include <algorithm>
 #include <map> 
-
-#include <sys/socket.h> // Para send() y MSG_NOSIGNAL
-#include <thread>       // Para this_thread
-#include <chrono>       // Para las duraciones de sleep_for
+#include <sys/socket.h> 
+#include <thread>       
+#include <chrono>       
+#include <fstream>      
+#include <iomanip>      
+#include <sstream>      
 
 using namespace std;
 
-// Definición de globales del servidor
+// --- GLOBALES DEL SERVIDOR ---
 mutex g_mutex;
 map<int, Partida> g_partidas;
 map<int, int> g_jugador_a_partida_id;
 int g_next_player_id = 1;
 int g_next_partida_id = 1;
 
-// Definición de constantes del servidor
+// --- CONSTANTES ---
 const chrono::milliseconds GAME_TICK_RATE(100);
-
 const int MAX_PLAYERS_SOLO = 6;
 const int MAX_PLAYERS_DUO = 12;
 const int COUNTDOWN_SECONDS = 15;
 
+// --- UTILIDADES ---
+string obtenerTimestamp() {
+    auto now = chrono::system_clock::now();
+    auto ms = chrono::duration_cast<chrono::milliseconds>(now.time_since_epoch()) % 1000;
+    time_t timer = chrono::system_clock::to_time_t(now);
+    tm bt = *localtime(&timer);
+    
+    ostringstream oss;
+    oss << put_time(&bt, "%Y-%m-%d %H:%M:%S");
+    oss << '.' << setfill('0') << setw(3) << ms.count();
+    return oss.str();
+}
 
+// --- LÓGICA DEL JUEGO ---
 void generarComida(Partida& partida) {
     if (partida.comida.empty() || (partida.estado == PLAYING && partida.comida.size() < 25 && rand() % 100 < 25)) {
         Posicion new_food; 
@@ -74,6 +88,7 @@ void moverSerpiente(int playerID, Jugador& jugador, Partida& partida) {
     else if (jugador.direccion == "LEFT") cabeza_nueva.x--; 
     else if (jugador.direccion == "RIGHT") cabeza_nueva.x++;
 
+    // Wrap-around
     if (cabeza_nueva.x < 0) cabeza_nueva.x = partida.grid_size - 1; 
     else if (cabeza_nueva.x >= partida.grid_size) cabeza_nueva.x = 0;
     if (cabeza_nueva.y < 0) cabeza_nueva.y = partida.grid_size - 1; 
@@ -89,6 +104,7 @@ void moverSerpiente(int playerID, Jugador& jugador, Partida& partida) {
         } 
     }
 
+    // Colisión cuerpo propio
     for (size_t i = 0; i < jugador.cuerpo.size(); ++i) { 
         if (i == jugador.cuerpo.size() - 1 && !come) continue; 
         if (cabeza_nueva == jugador.cuerpo[i]) { 
@@ -97,6 +113,7 @@ void moverSerpiente(int playerID, Jugador& jugador, Partida& partida) {
         } 
     }
     
+    // Colisión otros jugadores
     for (const auto& other_pair : partida.jugadores) { 
         if (other_pair.first == playerID) continue; 
         if (!other_pair.second.estaVivo) continue; 
@@ -104,7 +121,7 @@ void moverSerpiente(int playerID, Jugador& jugador, Partida& partida) {
         const Jugador& otra = other_pair.second;
 
         if (partida.modo == DUO && otra.equipo_id == jugador.equipo_id) {
-            continue;
+            continue; 
         }
         
         if (cabeza_nueva == otra.cuerpo.front()) { 
@@ -134,9 +151,16 @@ void moverSerpiente(int playerID, Jugador& jugador, Partida& partida) {
     }
 }
 
-
-// --- BUCLE DEL JUEGO ---
+// --- GAME LOOP PRINCIPAL ---
 void gameLoop() {
+    ofstream logFile("game_stats.csv", ios::out | ios::app);
+    
+    if (logFile.tellp() > 0) {
+        logFile << "\n";
+    } else {
+        logFile << "TIMESTAMP,PARTIDA_ID,PLAYER_ID,EQUIPO_ID,POS_X,POS_Y,SIZE,TOTAL_PLAYERS,MODO_JUEGO\n";
+    }
+
      while (true) {
         auto start_time = chrono::steady_clock::now();
         map<int, string> mensajes_por_socket;
@@ -155,7 +179,6 @@ void gameLoop() {
 
                 if (partida.estado == LOBBY) { 
                     bool start_solo = (partida.modo == SOLO && partida.jugadores.size() >= 2);
-                    // --- Dúo inicia con 4, 6, 8, 10 o 12 ---
                     bool start_duo = (partida.modo == DUO && 
                                       partida.jugadores.size() >= 4 && 
                                       partida.jugadores.size() % 2 == 0);
@@ -167,7 +190,6 @@ void gameLoop() {
                 }
                 else if (partida.estado == COUNTDOWN) {
                     bool revert_solo = (partida.modo == SOLO && partida.jugadores.size() < 2);
-                    // --- Vuelve a LOBBY si no es par >= 4 ---
                     bool revert_duo = (partida.modo == DUO && 
                                        (partida.jugadores.size() < 4 || partida.jugadores.size() % 2 != 0));
                     
@@ -193,6 +215,11 @@ void gameLoop() {
                     
                     int vivos = 0;
                     map<int, bool> equipos_vivos; 
+                    
+                    // Variables para logging
+                    int total_jugadores_partida = partida.jugadores.size();
+                    string timestamp_actual = obtenerTimestamp();
+                    string modoJuego = (partida.modo == SOLO) ? "SOLO" : "DUO";
 
                     for (auto& pair_jugador : partida.jugadores) {
                         int player_id = pair_jugador.first; 
@@ -208,11 +235,25 @@ void gameLoop() {
                             if (partida.modo == DUO) {
                                 equipos_vivos[jugador.equipo_id] = true;
                             }
+                            
+                            // LOGGING: Registro con columna MODO_JUEGO
+                            if (logFile.is_open()) {
+                                logFile << timestamp_actual << ","
+                                        << partida.id << ","
+                                        << player_id << ","
+                                        << jugador.equipo_id << ","
+                                        << jugador.cuerpo.front().x << ","
+                                        << jugador.cuerpo.front().y << ","
+                                        << jugador.cuerpo.size() << ","
+                                        << total_jugadores_partida << ","
+                                        << modoJuego
+                                        << endl; 
+                            }
                         }
                     } 
                     
                     bool min_players_solo = partida.jugadores.size() >= 2;
-                    bool min_players_duo = partida.jugadores.size() >= 4; // Mínimo 4 para terminar
+                    bool min_players_duo = partida.jugadores.size() >= 4; 
                     bool solo_end = (partida.modo == SOLO && vivos <= 1 && min_players_solo);
                     bool duo_end = (partida.modo == DUO && equipos_vivos.size() <= 1 && min_players_duo);
 
@@ -230,7 +271,7 @@ void gameLoop() {
                 g_partidas.erase(id); 
                 cout << "Partida #" << id << " eliminada." << endl; 
             }
-        } // Fin del lock
+        } 
 
         for (auto const& [socket, msg] : mensajes_por_socket) { 
             send(socket, msg.c_str(), msg.length(), MSG_NOSIGNAL); 
@@ -280,9 +321,7 @@ Posicion generarSpawnSeguro(Partida& partida) {
     return spawn_pos;
 }
 
-
 int encontrarOcrearPartida(int playerID, int clientSocket, GameMode modoBuscado) {
-    // 1. Buscar partida
     for (auto& pair : g_partidas) { 
         bool modo_ok = (pair.second.modo == modoBuscado);
         bool estado_ok = (pair.second.estado == LOBBY || pair.second.estado == COUNTDOWN);
@@ -307,12 +346,10 @@ int encontrarOcrearPartida(int playerID, int clientSocket, GameMode modoBuscado)
         } 
     }
     
-    // 2. Crear partida nueva
     int nueva_partida_id = g_next_partida_id++; 
     g_partidas[nueva_partida_id].id = nueva_partida_id; 
     g_partidas[nueva_partida_id].estado = LOBBY;
     g_partidas[nueva_partida_id].modo = modoBuscado; 
-    // --- Asignar grid_size ---
     g_partidas[nueva_partida_id].grid_size = (modoBuscado == SOLO) ? 50 : 100;
 
     Posicion spawn_pos = generarSpawnSeguro(g_partidas[nueva_partida_id]); 
