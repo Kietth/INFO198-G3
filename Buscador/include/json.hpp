@@ -1,7 +1,3 @@
-// Versión simplificada de nlohmann/json
-// Para usar la versión completa, descárgala de: https://github.com/nlohmann/json
-// Coloca este archivo en: Buscador/include/json.hpp
-
 #ifndef NLOHMANN_JSON_HPP
 #define NLOHMANN_JSON_HPP
 
