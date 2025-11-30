@@ -29,35 +29,35 @@ Este comando iniciará el menú principal desde donde podrás acceder a las dist
 -CONTEO DE PALABRAS: Una herramienta que cuenta la frecuencia de letras y palabras en un archivo de texto. <br/>
 -INDICE INVERTIDO: Mapea palabras o términos de los libros disponibles para hacer una búsqueda rápida. <br/>
 
-**Variables de Entorno:**
-Para Administrador de Usuarios:
+**Variables de Entorno:** 
+Para Administrador de Usuarios: <br/>
     USER_FILE: Especifica la ruta del archivo donde se almacenan los usuarios. <br/>
     PROFILE_FILE: Especifica la ruta del archivo donde se almacenan los perfiles y permisos. <br/>
 
-Para Menú Principal:
+Para Menú Principal: <br/>
     ADMIN_SYS: Ruta de la aplicación de administración de usuarios. <br/>
     MULTI_M: Ruta de la aplicación de multiplicación de matrices. <br/>
     CREATE_INDEX: Ruta de la aplicación para crear el índice invertido. <br/>
     CONTEO_TEXTO: Ruta de la aplicación de conteo de texto. <br/>
     INDICE_INVET_PARALELO: Ruta de la aplicación creación de un índice invertido paralelo. <br/>
 
-Para Juego:
-    SERVER_IP: IP del servidor al que el cliente ha de conectarse para jugar.
-    SERVER_PORT: Número de puerto en el que el servidor está escuchando y aceptando conexiones.
+Para Juego: <br/>
+    SERVER_IP: IP del servidor al que el cliente ha de conectarse para jugar. <br/>
+    SERVER_PORT: Número de puerto en el que el servidor está escuchando y aceptando conexiones. <br/>
 
 **Juego**
 
-**Compilar el Juego:**
-Libreria necesaria: libsfml-dev.
+**Compilar el Juego:** <br/>
+Libreria necesaria: libsfml-dev. <br/>
 Abre una terminal en la carpeta raíz del proyecto (donde está el `Makefile`) y ejecuta:
 
 make all
 
-**Ejecución Juego**
+**Ejecución Juego** <br/>
 
 El juego utiliza una arquitectura cliente-servidor. Para jugar, primero debes compilar ambos programas y luego iniciar el servidor y los clientes.
 
 Se puede jugar modo solo(todos contra todos) o modo duo (equipos de dos jugadores)
 
-**Controles**
+**Controles** <br/>
 Se usan las flechas direcionales UP, DOWN, RIGHT, LEFT para el movimiento y ademas al mantener presionado espacio (SPACE) se acelera el movimiento del jugador.

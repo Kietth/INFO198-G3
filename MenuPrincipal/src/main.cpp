@@ -50,6 +50,7 @@ void Menu::mostrar(const string& user, const string& pass, const string& filePat
         if (auth.tienePermiso(6)) cout << "6. Conteo sobre texto\n";
         if (auth.tienePermiso(7)) cout << "7. Crea índice invertido\n";
         if (auth.tienePermiso(8)) cout << "8. Crea índice invertido PARALELO\n";
+        if (auth.tienePermiso(9)) cout << "9. Análisis de rendimiento (índice paralelo)\n";
 
         cout << "Seleccione: ";
         cin >> opcion;
@@ -298,6 +299,32 @@ void Menu::mostrar(const string& user, const string& pass, const string& filePat
                 esperar();
                 break;
             }
+                        // ----- CASE 9: Análisis de rendimiento con threads -----
+            case 9: {
+                cout << "\n--- Análisis de rendimiento del índice invertido paralelo ---" << endl;
+
+                auto env = cargarEnv(".env");
+                string prog = getRutaEjecutable(env["ANALISIS_THREADS"]);
+
+                if (prog.empty()) {
+                    cout << "❌ La variable ANALISIS_THREADS no está definida o está vacía en .env" << endl;
+                    esperar();
+                    break;
+                }
+
+                string comando = prog; // No necesita argumentos extra, el propio programa pregunta todo
+                cout << "Ejecutando: " << comando << endl;
+
+                int resultado = system(comando.c_str());
+                if (resultado != 0) {
+                    cout << "❌ Error al ejecutar el análisis de rendimiento (código: "
+                         << resultado << ")." << endl;
+                }
+
+                esperar();
+                break;
+            }
+
             default:
                 cout << "Opción inválida\n";
                 esperar();

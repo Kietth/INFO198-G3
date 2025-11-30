@@ -11,12 +11,13 @@ CONTEO_BIN = ContarPalabras/conteo_texto
 INDICE_BIN = CrearIndice/crear_indice
 INDICE_PARALELO_BIN = CrearIndiceParalelo/crear_indice_paralelo
 MENU_BIN = menu_principal
+ANALISIS_THREADS_BIN = AnalisisThreads/analisis_threads
 
 # --- Targets que no son archivos ---
 .PHONY: all clean re
 
 # --- Target por defecto ---
-all: $(ADMIN_BIN) $(MATRICES_BIN) $(PALINDROMO_BIN) $(FUNCION_BIN) $(CONTEO_BIN) $(INDICE_BIN) $(INDICE_PARALELO_BIN) $(MENU_BIN)
+all: $(ADMIN_BIN) $(MATRICES_BIN) $(PALINDROMO_BIN) $(FUNCION_BIN) $(CONTEO_BIN) $(INDICE_BIN) $(INDICE_PARALELO_BIN) $(MENU_BIN) $(ANALISIS_THREADS_BIN)
 	@echo "--- ✅ Compilacion general completada ---"
 
 # --- Administrador de usuarios ---
@@ -67,6 +68,14 @@ $(INDICE_PARALELO_BIN):
 	$(CXX) CrearIndiceParalelo/src/crear_indice_paralelo.cpp \
 	-o $(INDICE_PARALELO_BIN) $(CXXFLAGS) $(THREAD_FLAGS) -lstdc++fs
 
+# --- Análisis de rendimiento con threads ---
+$(ANALISIS_THREADS_BIN):
+	@echo "--- Compilando [Analisis de rendimiento con threads] ---"
+	$(CXX) AnalisisThreads/src/analisis_threads.cpp \
+	    MenuPrincipal/src/env_utils.cpp \
+	    -IMenuPrincipal/include \
+	    -o $(ANALISIS_THREADS_BIN) $(CXXFLAGS)
+
 # --- Menú principal ---
 $(MENU_BIN): $(ADMIN_BIN)
 	@echo "--- Compilando [Menu Principal] ---"
@@ -81,7 +90,7 @@ $(MENU_BIN): $(ADMIN_BIN)
 # --- Limpiar ---
 clean:
 	@echo "--- 🧹 Limpiando todos los ejecutables ---"
-	rm -f $(ADMIN_BIN) $(MATRICES_BIN) $(PALINDROMO_BIN) $(FUNCION_BIN) $(MENU_BIN) $(CONTEO_BIN) $(INDICE_BIN) $(INDICE_PARALELO_BIN)
+	rm -f $(ADMIN_BIN) $(MATRICES_BIN) $(PALINDROMO_BIN) $(FUNCION_BIN) $(MENU_BIN) $(CONTEO_BIN) $(INDICE_BIN) $(INDICE_PARALELO_BIN) $(ANALISIS_THREADS_BIN)
 	@echo "--- Limpieza completada ---"
 
 # --- Reconstruir (re) ---
