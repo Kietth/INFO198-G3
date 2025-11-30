@@ -38,7 +38,7 @@ void Menu::mostrar(const string& user, const string& pass, const string& filePat
          << " (perfil: " << auth.getPerfil() << ")\n";
 
     int opcion;
-        do {
+    do {
         cout << "\n=== MENU PRINCIPAL ===  PID: " << obtenerPID() << endl;
         cout << "0. Salir\n";
 
@@ -50,7 +50,8 @@ void Menu::mostrar(const string& user, const string& pass, const string& filePat
         if (auth.tienePermiso(6)) cout << "6. Conteo sobre texto\n";
         if (auth.tienePermiso(7)) cout << "7. Crea índice invertido\n";
         if (auth.tienePermiso(8)) cout << "8. Crea índice invertido PARALELO\n";
-        if (auth.tienePermiso(9)) cout << "9. Análisis de rendimiento (índice paralelo)\n";
+        if (auth.tienePermiso(9)) cout << "9. Buscador de índice invertido\n";
+        if (auth.tienePermiso(10)) cout << "10. Análisis de rendimiento (índice paralelo)\n";
 
         cout << "Seleccione: ";
         cin >> opcion;
@@ -299,8 +300,53 @@ void Menu::mostrar(const string& user, const string& pass, const string& filePat
                 esperar();
                 break;
             }
-                        // ----- CASE 9: Análisis de rendimiento con threads -----
+            // ----- CASE 9: Buscador de Índice Invertido -----
             case 9: {
+                string nombreIdx;
+                
+                cout << "\n--- Buscador de Índice Invertido ---" << endl;
+                
+                cout << "Ingrese el nombre del archivo índice (.idx): ";
+                cin >> nombreIdx;
+
+                if (nombreIdx.size() < 4 || nombreIdx.substr(nombreIdx.size()-4) != ".idx") {
+                    cout << "❌ El archivo debe terminar en .idx\n";
+                    esperar();
+                    break;
+                }
+
+                // Verificar que el archivo existe
+                ifstream fileIdx(nombreIdx);
+                if (!fileIdx) {
+                    cout << "❌ El archivo de índice no existe: " << nombreIdx << endl;
+                    esperar();
+                    break;
+                }
+                fileIdx.close();
+
+                auto env = cargarEnv(".env");
+                string prog = getRutaEjecutable(env["BUSCADOR"]);
+
+                if (prog.empty()) {
+                    cout << "❌ La variable BUSCADOR no está definida en .env" << endl;
+                    esperar();
+                    break;
+                }
+
+                string comando = prog + " " + nombreIdx;
+                cout << "Ejecutando: " << comando << endl;
+
+                int resultado = system(comando.c_str());
+                
+                if (resultado != 0) {
+                    cout << "❌ Error al ejecutar el buscador (código: " << resultado << ")." << endl;
+                }
+                
+                esperar();
+                break;
+            }
+            // ----- CASE 10: Análisis de rendimiento con threads -----
+            case 10: {
                 cout << "\n--- Análisis de rendimiento del índice invertido paralelo ---" << endl;
 
                 auto env = cargarEnv(".env");
