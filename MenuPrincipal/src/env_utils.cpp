@@ -46,3 +46,23 @@ map<string, string> cargarEnv(const string& ruta) {
     file.close();
     return envMap;
 }
+
+string getJuegoDir() {
+    char* val = getenv("JUEGO_DIR");
+    return val ? string(val) : "./SuperSnake_juego"; // Valor por defecto seguro
+}
+
+string getJuegoServerBin() {
+    char* val = getenv("JUEGO_SERVER_BIN");
+    return val ? string(val) : "server";
+}
+
+string getJuegoClientBin() {
+    char* val = getenv("JUEGO_CLIENT_BIN");
+    return val ? string(val) : "client";
+}
+
+string getJuegoScript() {
+    char* val = getenv("JUEGO_SCRIPT");
+    return val ? string(val) : "generar_estadisticas.py";
+}

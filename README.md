@@ -56,17 +56,58 @@ Para Juego: <br/>
 
 **Juego**
 
-**Compilar el Juego:** <br/>
-Libreria necesaria: libsfml-dev. <br/>
-Abre una terminal en la carpeta raíz del proyecto (donde está el `Makefile`) y ejecuta:
+# Super Snake
 
-make all
+## Descripción General
+Super Snake es una implementación multijugador del clásico juego Snake, desarrollada bajo una arquitectura cliente-servidor en C++. El sistema integra un módulo de análisis de datos post-partida implementado en Python, diseñado para la evaluación de rendimiento y comportamiento de los jugadores.
 
-**Ejecución Juego** <br/>
+## Mecánicas de Juego
+El objetivo principal consiste en controlar una entidad (serpiente) dentro de una cuadrícula delimitada, consumiendo objetos (comida) para incrementar su tamaño. La condición de derrota se activa si la cabeza de la serpiente colisiona con:
+1. Los límites del mapa (paredes).
+2. Su propio cuerpo.
+3. El cuerpo de otro jugador (salvo excepciones en modo de equipos).
 
-El juego utiliza una arquitectura cliente-servidor. Para jugar, primero debes compilar ambos programas y luego iniciar el servidor y los clientes.
+La partida concluye cuando queda un único jugador o equipo activo.
 
-Se puede jugar modo solo(todos contra todos) o modo duo (equipos de dos jugadores)
+## Modos de Juego
+El servidor permite la configuración de dos modalidades distintas:
 
-**Controles** <br/>
-Se usan las flechas direcionales UP, DOWN, RIGHT, LEFT para el movimiento y ademas al mantener presionado espacio (SPACE) se acelera el movimiento del jugador.
+### SOLO (Free-for-All)
+Modalidad de todos contra todos. Cada jugador es asignado a un equipo individual. Cualquier colisión con otra entidad resulta en la eliminación inmediata del jugador.
+
+### DUO (Equipos)
+Los jugadores son agrupados en pares. La lógica de colisiones se modifica para permitir que los miembros de un mismo equipo se atraviesen entre sí sin penalización, fomentando la cooperación estratégica.
+
+## Configuración del Entorno
+El despliegue del proyecto requiere la configuración de variables de entorno para la gestión de red y rutas de salida de datos. Estas deben definirse en un archivo `.env` ubicado en la raíz del ejecutable.
+
+### Variables Requeridas
+
+```env
+# Configuración de Red
+IP=127.0.0.1
+PORT=8080
+
+# Configuración de Análisis de Datos
+STATS_OUTPUT_DIR=./estadisticas_finales
+```
+# Módulo de Análisis de Datos y Métricas - Super Snake
+
+## Descripción
+Este módulo es un componente independiente desarrollado en Python, diseñado para procesar los registros de actividad (logs) generados por el servidor de juego Super Snake. Su función principal es transformar los datos crudos de las partidas en visualizaciones estadísticas que permitan evaluar el balance del juego, el comportamiento de los jugadores y el rendimiento de las diferentes modalidades.
+
+## Requisitos del Sistema
+
+El script de análisis requiere un entorno de Python 3.x con las siguientes librerías instaladas:
+
+* **pandas**: Para la manipulación y limpieza de estructuras de datos.
+* **matplotlib**: Para la generación de gráficos base.
+* **seaborn**: Para la visualización estadística avanzada.
+* **python-dotenv**: Para la gestión de configuración mediante variables de entorno.
+
+### Instalación de Dependencias
+Puede instalar todas las dependencias necesarias ejecutando el siguiente comando:
+
+```bash
+pip install pandas matplotlib seaborn python-dotenv
+```

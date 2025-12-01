@@ -25,6 +25,53 @@ void esperar() {
     cin.get();
 }
 
+// Función auxiliar para el submenú del juego
+void mostrarMenuJuego() {
+    int opcionJuego = 0;
+    string gameDir = getJuegoDir();
+    string cmd;
+
+    do {
+        cout << "\n========================================" << endl;
+        cout << "      MÓDULO JUEGO SUPER SNAKE" << endl;
+        cout << "========================================" << endl;
+        cout << "1. Ejecutar Servidor" << endl;
+        cout << "2. Ejecutar Cliente" << endl;
+        cout << "3. Generar Gráficos de Análisis (Python)" << endl;
+        cout << "4. Volver al Menú Principal" << endl;
+        cout << "Seleccione una opción: ";
+        cin >> opcionJuego;
+
+        switch (opcionJuego) {
+            case 1:
+                cout << "Iniciando Servidor..." << endl;
+                // Cambia al directorio del juego y ejecuta el servidor
+                cmd = "cd " + gameDir + " && ./" + getJuegoServerBin();
+                system(cmd.c_str());
+                break;
+            case 2:
+                cout << "Iniciando Cliente..." << endl;
+                // Cambia al directorio y ejecuta el cliente
+                cmd = "cd " + gameDir + " && ./" + getJuegoClientBin();
+                system(cmd.c_str());
+                break;
+            case 3:
+                cout << "Generando estadísticas..." << endl;
+                // Ejecuta el script de python en el directorio correcto
+                cmd = "cd " + gameDir + " && python3 " + getJuegoScript();
+                system(cmd.c_str());
+                break;
+            case 4:
+                cout << "Volviendo..." << endl;
+                break;
+            default:
+                cout << "Opción no válida. Intente de nuevo." << endl;
+        }
+    } while (opcionJuego != 4);
+}
+
+
+
 void Menu::mostrar(const string& user, const string& pass, const string& filePath) {
     Auth auth("AdministradorUsuarios/USUARIOS.TXT",
               "AdministradorUsuarios/PERFILES.TXT");
@@ -52,6 +99,7 @@ void Menu::mostrar(const string& user, const string& pass, const string& filePat
         if (auth.tienePermiso(8)) cout << "8. Crea índice invertido PARALELO\n";
         if (auth.tienePermiso(9)) cout << "9. Buscador de índice invertido\n";
         if (auth.tienePermiso(10)) cout << "10. Análisis de rendimiento (índice paralelo)\n";
+        if (auth.tienePermiso(11)) cout << "11. Juego\n";
 
         cout << "Seleccione: ";
         cin >> opcion;
@@ -368,6 +416,11 @@ void Menu::mostrar(const string& user, const string& pass, const string& filePat
                 }
 
                 esperar();
+                break;
+            }
+
+            case 11: {
+                mostrarMenuJuego();
                 break;
             }
 

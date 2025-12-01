@@ -1,6 +1,7 @@
 CXX = g++
 CXXFLAGS = -std=c++17 -Wall -g
 THREAD_FLAGS = -pthread
+SFML_FLAGS = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-network
 
 # --- Ejecutables ---
 ADMIN_BIN = AdministradorUsuarios/administrador_usuarios
@@ -16,11 +17,15 @@ CACHE_BIN = Cache/cache
 ANALISIS_THREADS_BIN = AnalisisThreads/analisis_threads
 MENU_BIN = menu_principal
 
+# --- Ejecutables Juego Super Snake ---
+SERVER_BIN = SuperSnake_juego/server
+CLIENT_BIN = SuperSnake_juego/client
+
 # --- Targets que no son archivos ---
 .PHONY: all clean re
 
 # --- Target por defecto ---
-all: $(ADMIN_BIN) $(MATRICES_BIN) $(PALINDROMO_BIN) $(FUNCION_BIN) $(CONTEO_BIN) $(INDICE_BIN) $(INDICE_PARALELO_BIN) $(BUSCADOR_BIN) $(MOTOR_BUSQUEDA_BIN) $(CACHE_BIN) $(ANALISIS_THREADS_BIN) $(MENU_BIN)
+all: $(ADMIN_BIN) $(MATRICES_BIN) $(PALINDROMO_BIN) $(FUNCION_BIN) $(CONTEO_BIN) $(INDICE_BIN) $(INDICE_PARALELO_BIN) $(BUSCADOR_BIN) $(MOTOR_BUSQUEDA_BIN) $(CACHE_BIN) $(ANALISIS_THREADS_BIN) $(MENU_BIN) $(SERVER_BIN) $(CLIENT_BIN)
 	@echo "--- ✅ Compilacion general completada ---"
 
 # --- Administrador de usuarios ---
@@ -111,10 +116,28 @@ $(MENU_BIN): $(ADMIN_BIN)
 	-IAdministradorUsuarios/include -IMenuPrincipal/include \
 	-o $(MENU_BIN) $(CXXFLAGS)
 
+# --- Juego: Servidor ---
+$(SERVER_BIN):
+	@echo "--- Compilando [Juego Super Snake: SERVIDOR] ---"
+	$(CXX) SuperSnake_juego/src/servidor.cpp \
+	SuperSnake_juego/src/red_servidor.cpp \
+	SuperSnake_juego/src/logica.cpp \
+	-ISuperSnake_juego/include \
+	-o $(SERVER_BIN) $(CXXFLAGS) $(THREAD_FLAGS) $(SFML_FLAGS)
+
+# --- Juego: Cliente ---
+$(CLIENT_BIN):
+	@echo "--- Compilando [Juego Super Snake: CLIENTE] ---"
+	$(CXX) SuperSnake_juego/src/cliente.cpp \
+	SuperSnake_juego/src/red_cliente.cpp \
+	SuperSnake_juego/src/graficos.cpp \
+	-ISuperSnake_juego/include \
+	-o $(CLIENT_BIN) $(CXXFLAGS) $(THREAD_FLAGS) $(SFML_FLAGS)
+
 # --- Limpiar ---
 clean:
 	@echo "--- Limpiando todos los ejecutables ---"
-	rm -f $(ADMIN_BIN) $(MATRICES_BIN) $(PALINDROMO_BIN) $(FUNCION_BIN) $(MENU_BIN) $(CONTEO_BIN) $(INDICE_BIN) $(INDICE_PARALELO_BIN) $(BUSCADOR_BIN) $(MOTOR_BUSQUEDA_BIN) $(CACHE_BIN) $(ANALISIS_THREADS_BIN)
+	rm -f $(ADMIN_BIN) $(MATRICES_BIN) $(PALINDROMO_BIN) $(FUNCION_BIN) $(MENU_BIN) $(CONTEO_BIN) $(INDICE_BIN) $(INDICE_PARALELO_BIN) $(BUSCADOR_BIN) $(MOTOR_BUSQUEDA_BIN) $(CACHE_BIN) $(ANALISIS_THREADS_BIN) $(SERVER_BIN) $(CLIENT_BIN)
 	@echo "--- Limpieza completada ---"
 
 # --- Reconstruir (re) ---
