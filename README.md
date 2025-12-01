@@ -43,6 +43,10 @@ Para Menú Principal: <br/>
     CONTEO_TEXTO: Ruta de la aplicación de conteo de texto. <br/>
     INDICE_INVET_PARALELO: Ruta de la aplicación creación de un índice invertido paralelo. <br/>
     BUSCADOR: Ruta de la interfaz principal del usuario del buscador <br/>
+    JUEGO_DIR: PATH juego.
+    JUEGO_SERVER_BIN: Ruta servidor juego.
+    JUEGO_CLIENT_BIN: Ruta cliente juego.
+    JUEGO_SCRIPT: Ruta script para generar graficos juego.
     
 Para Buscador: <br/>
     CACHE: Ruta para el sistema de cache intermedio <br/>
@@ -53,6 +57,7 @@ Para Buscador: <br/>
 Para Juego: <br/>
     SERVER_IP: IP del servidor al que el cliente ha de conectarse para jugar. <br/>
     SERVER_PORT: Número de puerto en el que el servidor está escuchando y aceptando conexiones. <br/>
+    STATS_OUTPUT_DIR: PATH graficos. <br/>
 
 **Juego**
 
